@@ -36,6 +36,7 @@ export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [filter, setFilter] = useState<Filter>("all");
+  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
 
   useEffect(() => {
     client.adminGetContacts().then((data) => setContacts(data as Contact[])).catch(() => {});
@@ -53,15 +54,21 @@ export default function AdminDashboard() {
 
   async function handleUpdate(id: string, data: { attended?: number; archived?: number }) {
     await client.adminUpdateContactStatus(id, data);
-    setContacts((prev) => prev.map((c) => (c.id === id ? { ...c, ...data } : c)));
+    setContacts((prev) => prev.map((c) => c.id === id ? { ...c, ...data } : c));
   }
 
-  const filtered = contacts.filter((c) => {
-    if (filter === "pending") return !c.attended && !c.archived;
-    if (filter === "attended") return c.attended;
-    if (filter === "archived") return c.archived;
-    return true;
-  });
+  const filtered = [...contacts]
+    .filter((c) => {
+      if (filter === "pending") return !c.attended && !c.archived;
+      if (filter === "attended") return c.attended;
+      if (filter === "archived") return c.archived;
+      return true;
+    })
+    .sort((a, b) => {
+      const da = a.createdAt ? new Date(a.createdAt.replace(" ", "T") + "Z").getTime() : 0;
+      const db = b.createdAt ? new Date(b.createdAt.replace(" ", "T") + "Z").getTime() : 0;
+      return sortOrder === "newest" ? db - da : da - db;
+    });
 
   return (
     <div className="min-h-screen bg-muted/30 flex">
@@ -144,6 +151,12 @@ export default function AdminDashboard() {
                   </button>
                 ))}
               </div>
+              <button
+                onClick={() => setSortOrder(sortOrder === "newest" ? "oldest" : "newest")}
+                className="text-xs text-muted-foreground hover:text-foreground font-medium flex items-center gap-1"
+              >
+                {sortOrder === "newest" ? "↓ Newest" : "↑ Oldest"}
+              </button>
             </div>
             {contacts.length === 0 ? (
               <p className="p-6 text-sm text-muted-foreground">No contacts yet.</p>
