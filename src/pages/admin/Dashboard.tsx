@@ -16,7 +16,6 @@ type Contact = {
 
 const navItems = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/", label: "View Site", icon: FileText },
 ];
 
 export default function AdminDashboard() {
