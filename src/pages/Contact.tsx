@@ -142,7 +142,7 @@ export default function Contact() {
                   </div>
                   <button
                     type="submit"
-                    className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium text-sm hover:bg-primary/90 transition-colors"
+                    className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-medium text-sm hover:bg-primary/90 transition-colors"
                   >
                     Send Message
                     <Send className="h-4 w-4" />
