@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { UserButton, useUser } from "@clerk/react";
 import { Link, useLocation } from "react-router-dom";
 import { client } from "@/lib/client";
-import { MessageSquare, FileText, Trash2, Menu, X, LayoutDashboard } from "lucide-react";
+import { MessageSquare, Trash2, Menu, X, LayoutDashboard, CheckCircle, Archive } from "lucide-react";
 
 type Contact = {
   id: string;
@@ -12,10 +12,21 @@ type Contact = {
   organisation: string | null;
   message: string;
   createdAt: string | null;
+  attended: number | null;
+  archived: number | null;
 };
 
 const navItems = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
+];
+
+type Filter = "all" | "pending" | "attended" | "archived";
+
+const filters: { key: Filter; label: string }[] = [
+  { key: "all", label: "All" },
+  { key: "pending", label: "Pending" },
+  { key: "attended", label: "Attended" },
+  { key: "archived", label: "Archived" },
 ];
 
 export default function AdminDashboard() {
@@ -24,6 +35,7 @@ export default function AdminDashboard() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [filter, setFilter] = useState<Filter>("all");
 
   useEffect(() => {
     client.adminGetContacts().then((data) => setContacts(data as Contact[])).catch(() => {});
@@ -38,6 +50,18 @@ export default function AdminDashboard() {
       setDeleting(null);
     }
   }
+
+  async function handleUpdate(id: string, data: { attended?: number; archived?: number }) {
+    await client.adminUpdateContactStatus(id, data);
+    setContacts((prev) => prev.map((c) => (c.id === id ? { ...c, ...data } : c)));
+  }
+
+  const filtered = contacts.filter((c) => {
+    if (filter === "pending") return !c.attended && !c.archived;
+    if (filter === "attended") return c.attended;
+    if (filter === "archived") return c.archived;
+    return true;
+  });
 
   return (
     <div className="min-h-screen bg-muted/30 flex">
@@ -105,14 +129,29 @@ export default function AdminDashboard() {
 
           {/* Contacts */}
           <div className="bg-card border rounded-xl">
-            <div className="px-6 py-4 border-b">
+            <div className="px-6 py-4 border-b flex items-center justify-between gap-4 flex-wrap">
               <h2 className="font-semibold">Contact Submissions</h2>
+              <div className="flex gap-1 bg-muted rounded-lg p-1">
+                {filters.map((f) => (
+                  <button
+                    key={f.key}
+                    onClick={() => setFilter(f.key)}
+                    className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                      filter === f.key ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
             </div>
             {contacts.length === 0 ? (
               <p className="p-6 text-sm text-muted-foreground">No contacts yet.</p>
+            ) : filtered.length === 0 ? (
+              <p className="p-6 text-sm text-muted-foreground">No {filter} contacts.</p>
             ) : (
               <div className="divide-y">
-                {contacts.map((contact) => (
+                {filtered.map((contact) => (
                   <div key={contact.id} className="px-6 py-4">
                     <div className="flex justify-between items-start gap-4">
                       <div className="min-w-0">
@@ -129,14 +168,32 @@ export default function AdminDashboard() {
                             {new Date(contact.createdAt.replace(" ", "T") + "Z").toLocaleString()}
                           </p>
                         )}
+                        <div className="flex gap-2 mt-3">
+                          {!contact.attended && (
+                            <button
+                              onClick={() => handleUpdate(contact.id, { attended: 1 })}
+                              className="inline-flex items-center gap-1 text-xs text-green-600 hover:text-green-700 font-medium"
+                            >
+                              <CheckCircle className="h-3 w-3" /> Attended
+                            </button>
+                          )}
+                          {!contact.archived && (
+                            <button
+                              onClick={() => handleUpdate(contact.id, { archived: 1 })}
+                              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground font-medium"
+                            >
+                              <Archive className="h-3 w-3" /> Archive
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleDelete(contact.id)}
+                            disabled={deleting === contact.id}
+                            className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-destructive font-medium disabled:opacity-50"
+                          >
+                            <Trash2 className="h-3 w-3" /> Delete
+                          </button>
+                        </div>
                       </div>
-                      <button
-                        onClick={() => handleDelete(contact.id)}
-                        disabled={deleting === contact.id}
-                        className="shrink-0 p-2 text-muted-foreground hover:text-destructive transition-colors disabled:opacity-50"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
                     </div>
                   </div>
                 ))}

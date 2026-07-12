@@ -33,6 +33,12 @@ export async function adminGetContacts() {
   return db.select().from(contacts).orderBy(contacts.createdAt);
 }
 
+export async function adminUpdateContactStatus(id: string, data: { attended?: number; archived?: number }) {
+  await getAdminUser();
+  await db.update(contacts).set(data).where(eq(contacts.id, id));
+  return { updated: true };
+}
+
 export async function adminDeleteContact(id: string) {
   await getAdminUser();
   await db.delete(contacts).where(eq(contacts.id, id));
