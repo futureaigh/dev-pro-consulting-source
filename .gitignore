@@ -35,6 +35,8 @@ dist-ssr
 *.sw?
 
 docs
+public/*.png
+!public/favicon.png
 
 # Internal databases
 development-queue.db

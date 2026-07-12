@@ -3,6 +3,7 @@ import { clerkMiddleware } from "@clerk/express";
 import { procedures } from "@/api";
 import { env } from "@/lib/env";
 import { setRpcContext, clearRpcContext } from "@/lib/rpc-context";
+import { getImageStream } from "@/lib/s3";
 
 const app = express();
 
@@ -25,6 +26,19 @@ app.post("/api", (req, res) => {
       clearRpcContext();
       res.status(500).json({ error: err.message });
     });
+});
+
+app.get(["/logo.png", "/about-team.png", "/clients/:file"], async (req, res) => {
+  const key = req.path.startsWith("/") ? req.path.slice(1) : req.path;
+  try {
+    const s3res = await getImageStream(key);
+    if (!s3res?.Body) return res.status(404).end();
+    res.set("Cache-Control", "public, max-age=31536000, immutable");
+    if (s3res.ContentType) res.set("Content-Type", s3res.ContentType);
+    (s3res.Body as NodeJS.ReadableStream).pipe(res);
+  } catch {
+    res.status(404).end();
+  }
 });
 
 if (env.VITE_NODE_ENV === "production") {

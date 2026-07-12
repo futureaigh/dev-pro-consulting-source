@@ -7,9 +7,15 @@ const publicSchema = z.object({
 
 const serverSchema = z.object({
   PORT: z.string(),
+  CLERK_PUBLISHABLE_KEY: z.string(),
   CLERK_SECRET_KEY: z.string(),
   TURSO_DATABASE_URL: z.string(),
   TURSO_AUTH_TOKEN: z.string(),
+  S3_ENDPOINT: z.string().optional().default(""),
+  S3_ACCESS_KEY_ID: z.string().optional().default(""),
+  S3_SECRET_ACCESS_KEY: z.string().optional().default(""),
+  S3_BUCKET: z.string().optional().default(""),
+  S3_REGION: z.string().optional().default("auto"),
 });
 
 const schema = serverSchema.extend(publicSchema.shape);
