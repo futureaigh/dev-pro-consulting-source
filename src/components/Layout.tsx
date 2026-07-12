@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Award } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const navLinks = [
@@ -91,85 +91,48 @@ export default function Layout() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-primary text-primary-foreground">
-        <div className="container py-12 md:py-16">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Brand column */}
-            <div className="md:col-span-1">
-              <img
-                src="/logo.png"
-                alt="Dev-Pro Consulting"
-                className="h-10 w-auto brightness-0 invert mb-4"
-              />
-              <p className="text-sm text-primary-foreground/80 leading-relaxed">
+      <footer className="bg-muted/30 border-t">
+        <div className="container mx-auto px-4 py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 text-center">
+            <div className="space-y-4 flex flex-col items-center justify-center">
+              <div>
+                <img
+                  src="/logo.png"
+                  alt="Dev-Pro Consulting Logo"
+                  className="h-12 w-auto mb-2"
+                />
+              </div>
+              <p className="text-sm text-muted-foreground max-w-xs">
                 Delivering High Performance for Effective Social Change.
               </p>
-              <p className="text-sm text-primary-foreground/60 mt-4">
+              <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 text-xs">
+                <Award className="h-3 w-3 mr-1" />
                 Established 2009
-              </p>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h4 className="font-semibold text-sm uppercase tracking-wider mb-4">
-                Quick Links
-              </h4>
-              <div className="space-y-2">
-                {navLinks.slice(0, 4).map((link) => (
-                  <Link
-                    key={link.to}
-                    to={link.to}
-                    className="block text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
               </div>
             </div>
-
-            {/* Expertise */}
-            <div>
-              <h4 className="font-semibold text-sm uppercase tracking-wider mb-4">
-                Expertise
-              </h4>
-              <div className="space-y-2">
-                <Link to="/services" className="block text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
-                  Research & M&E
-                </Link>
-                <Link to="/services" className="block text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
-                  Organisational Development
-                </Link>
-                <Link to="/services" className="block text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
-                  Integrated Development
-                </Link>
-                <Link to="/services" className="block text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
-                  Development Communications
-                </Link>
-              </div>
+            <div className="space-y-4 flex flex-col items-center justify-start">
+              <h4 className="font-semibold">Quick Links</h4>
+              <nav className="space-y-2">
+                <Link to="/" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Home</Link>
+                <Link to="/about" className="block text-sm text-muted-foreground hover:text-primary transition-colors">About</Link>
+                <Link to="/services" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Expertise</Link>
+                <Link to="/clients" className="block text-sm text-muted-foreground hover:text-primary transition-colors">Clients</Link>
+              </nav>
             </div>
-
-            {/* Contact info */}
-            <div>
-              <h4 className="font-semibold text-sm uppercase tracking-wider mb-4">
-                Contact
-              </h4>
-              <div className="space-y-3 text-sm text-primary-foreground/70">
-                <p>
-                  No. 110/3 Abokobi (Near the old GES Office)
-                  <br />
-                  P.O. Box AQ 231, Abokobi – Accra
-                </p>
-                <p>
-                  +233 24 432 6834 / +233 24 064 9371
-                </p>
-                <p>info@devproconsulting.com</p>
-                <p>www.devproconsulting.com</p>
-              </div>
+            <div className="space-y-4 flex flex-col items-center justify-start">
+              <h4 className="font-semibold">Expertise</h4>
+              <nav className="space-y-2">
+                <div className="text-sm text-muted-foreground">Research & M&E</div>
+                <div className="text-sm text-muted-foreground">Organisational Development</div>
+                <div className="text-sm text-muted-foreground">Integrated Development</div>
+                <div className="text-sm text-muted-foreground">Development Communications</div>
+              </nav>
             </div>
           </div>
-
-          <div className="border-t border-primary-foreground/20 mt-10 pt-6 text-center text-sm text-primary-foreground/60">
-            &copy; 2025 Dev-Pro Consulting. All rights reserved.
+          <div className="border-t mt-8 pt-8">
+            <div className="text-sm text-muted-foreground text-center">
+              &copy; 2025 Dev-Pro Consulting. All rights reserved.
+            </div>
           </div>
         </div>
       </footer>
