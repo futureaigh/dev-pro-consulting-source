@@ -7,6 +7,8 @@ import Services from "@/pages/Services";
 import Clients from "@/pages/Clients";
 import Publications from "@/pages/Publications";
 import Contact from "@/pages/Contact";
+import SignInPage from "@/pages/SignIn";
+import AdminDashboard from "@/pages/admin/Dashboard";
 
 function AdminProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isLoaded, user } = useUser();
@@ -20,6 +22,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/sign-in" element={<SignInPage />} />
+        <Route path="/admin" element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>} />
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
