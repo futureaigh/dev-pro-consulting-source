@@ -34,11 +34,13 @@ dist-ssr
 *.sln
 *.sw?
 
+docs
+
 # Internal databases
 development-queue.db
+production-queue.db
 development-queue.db-shm
 development-queue.db-wal
-production-queue.db
 production-queue.db-shm
 production-queue.db-wal
 errors.db
