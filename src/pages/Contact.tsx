@@ -62,11 +62,11 @@ export default function Contact() {
                 Send us a Message
               </h2>
               {submitted ? (
-                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6 text-center">
-                  <div className="text-green-600 dark:text-green-400 font-semibold text-lg mb-2">
+                <div className="bg-primary/10 border border-primary/30 rounded-lg p-6 text-center">
+                  <div className="text-primary font-semibold text-lg mb-2">
                     Message Sent!
                   </div>
-                  <p className="text-sm text-green-600/80 dark:text-green-400/80">
+                  <p className="text-sm text-primary/80">
                     Thank you for reaching out. We&apos;ll get back to you shortly.
                   </p>
                 </div>
