@@ -155,7 +155,18 @@ export default function AdminDashboard() {
                   <div key={contact.id} className="px-6 py-4">
                     <div className="flex justify-between items-start gap-4">
                       <div className="min-w-0">
-                        <p className="font-medium">{contact.name}</p>
+                        <p className="font-medium">
+                          {contact.name}
+                          <span className={`ml-2 inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full ${
+                            contact.archived
+                              ? "bg-gray-100 text-gray-500"
+                              : contact.attended
+                                ? "bg-green-100 text-green-700"
+                                : "bg-yellow-100 text-yellow-700"
+                          }`}>
+                            {contact.archived ? "Archived" : contact.attended ? "Attended" : "Pending"}
+                          </span>
+                        </p>
                         <p className="text-sm text-muted-foreground">{contact.email}</p>
                         {(contact.phone || contact.organisation) && (
                           <p className="text-xs text-muted-foreground mt-0.5">
@@ -168,22 +179,38 @@ export default function AdminDashboard() {
                             {new Date(contact.createdAt.replace(" ", "T") + "Z").toLocaleString()}
                           </p>
                         )}
-                        <div className="flex gap-2 mt-3">
-                          {!contact.attended && (
+                        <div className="flex gap-3 mt-3">
+                          {contact.archived ? (
                             <button
-                              onClick={() => handleUpdate(contact.id, { attended: 1 })}
-                              className="inline-flex items-center gap-1 text-xs text-green-600 hover:text-green-700 font-medium"
-                            >
-                              <CheckCircle className="h-3 w-3" /> Attended
-                            </button>
-                          )}
-                          {!contact.archived && (
-                            <button
-                              onClick={() => handleUpdate(contact.id, { archived: 1 })}
+                              onClick={() => handleUpdate(contact.id, { archived: 0 })}
                               className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground font-medium"
                             >
-                              <Archive className="h-3 w-3" /> Archive
+                              <Archive className="h-3 w-3" /> Unarchive
                             </button>
+                          ) : (
+                            <>
+                              {contact.attended ? (
+                                <button
+                                  onClick={() => handleUpdate(contact.id, { attended: 0 })}
+                                  className="inline-flex items-center gap-1 text-xs text-yellow-600 hover:text-yellow-700 font-medium"
+                                >
+                                  <CheckCircle className="h-3 w-3" /> Mark Pending
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleUpdate(contact.id, { attended: 1 })}
+                                  className="inline-flex items-center gap-1 text-xs text-green-600 hover:text-green-700 font-medium"
+                                >
+                                  <CheckCircle className="h-3 w-3" /> Mark Attended
+                                </button>
+                              )}
+                              <button
+                                onClick={() => handleUpdate(contact.id, { archived: 1 })}
+                                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground font-medium"
+                              >
+                                <Archive className="h-3 w-3" /> Archive
+                              </button>
+                            </>
                           )}
                           <button
                             onClick={() => handleDelete(contact.id)}
