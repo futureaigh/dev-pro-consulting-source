@@ -126,7 +126,7 @@ export default function AdminDashboard() {
                         <p className="text-sm mt-2 whitespace-pre-wrap">{contact.message}</p>
                         {contact.createdAt && (
                           <p className="text-xs text-muted-foreground mt-2">
-                            {new Date(contact.createdAt).toLocaleString()}
+                            {new Date(contact.createdAt.replace(" ", "T") + "Z").toLocaleString()}
                           </p>
                         )}
                       </div>
