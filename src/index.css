@@ -24,30 +24,33 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-display: 'Playfair Display', Georgia, serif;
+  --font-sans: "Century Gothic", "ITC Avant Garde Gothic Std", "Futura", "Trebuchet MS", sans-serif;
 }
 
 :root {
   --radius: 0.5rem;
-  --background: oklch(0.98 0 0);
-  --foreground: oklch(0.15 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0 0);
-  --primary: oklch(0.38 0.06 260);
-  --primary-foreground: oklch(0.97 0 0);
-  --secondary: oklch(0.55 0.08 240);
-  --secondary-foreground: oklch(0.97 0 0);
-  --muted: oklch(0.95 0.01 260);
-  --muted-foreground: oklch(0.5 0.02 260);
-  --accent: oklch(0.62 0.1 210);
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.6 0.2 25);
-  --border: oklch(0.9 0.01 260);
-  --input: oklch(0.9 0.01 260);
-  --ring: oklch(0.38 0.06 260);
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(0 0% 15%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(0 0% 15%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(0 0% 15%);
+  --primary: hsl(292 78% 36%);
+  --primary-foreground: hsl(0 0% 98%);
+  --secondary: hsl(292 30% 96%);
+  --secondary-foreground: hsl(0 0% 15%);
+  --muted: hsl(0 0% 96%);
+  --muted-foreground: hsl(0 0% 45%);
+  --accent: hsl(292 30% 96%);
+  --accent-foreground: hsl(0 0% 15%);
+  --destructive: hsl(0 84% 60%);
+  --border: hsl(0 0% 90%);
+  --input: hsl(0 0% 90%);
+  --ring: hsl(292 78% 36%);
+  --consulting-purple: 292 78% 36%;
+  --consulting-dark: 0 0% 15%;
+  --consulting-gray: 0 0% 45%;
+  --consulting-light-purple: 292 30% 96%;
 }
 
 @layer base {
@@ -65,4 +68,31 @@
   margin-right: auto;
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+@utility consulting-card {
+  @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+}
+
+@utility micro-animation {
+  @apply transition-all duration-300;
+}
+
+@utility consulting-gradient {
+  background: linear-gradient(135deg, rgba(146, 39, 143, 0.9) 0%, rgba(4, 4, 4, 0.95) 100%);
+}
+
+.micro-animation:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.consulting-hero-with-image {
+  position: relative;
+}
+
+.fade-in,
+.slide-in-left,
+.bounce-in {
+  opacity: 0;
 }
