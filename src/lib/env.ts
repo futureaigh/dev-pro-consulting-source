@@ -1,27 +1,19 @@
 import { z } from "zod";
 
 const publicSchema = z.object({
-  VITE_APP_ID: z.string(),
-  VITE_BASE_URL: z.url(),
-  VITE_ROOT_URL: z.url(),
-  VITE_REALTIME_DOMAIN: z.string(),
-  VITE_BOX_ID: z.string(),
+  VITE_CLERK_PUBLISHABLE_KEY: z.string(),
   VITE_NODE_ENV: z.enum(["development", "production"]).default("development"),
 });
 
 const serverSchema = z.object({
   PORT: z.string(),
-  API_KEY: z.string(), // provided by system variables
-  DB_FILE_NAME: z.string(),
-  GUEST_SERVICES_URL: z.url(),
-  QUEUE_DB_FILE_NAME: z.string(),
-  ERRORS_DB_FILE_NAME: z.string(),
+  CLERK_SECRET_KEY: z.string(),
+  TURSO_DATABASE_URL: z.string(),
+  TURSO_AUTH_TOKEN: z.string(),
 });
 
 const schema = serverSchema.extend(publicSchema.shape);
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore import.meta.env type issues are not correctly inferred
 const metaEnv = import.meta.env;
 
 const isServer = metaEnv?.SSR || typeof process !== "undefined";
@@ -40,7 +32,6 @@ const proxy = new Proxy(parsed.data, {
     if (isServer || String(prop).startsWith("VITE_")) {
       return target[prop as keyof typeof target];
     }
-
     throw new Error(
       `Attempted to access server-side environment variable "${String(prop)}" from the client-side.`,
     );

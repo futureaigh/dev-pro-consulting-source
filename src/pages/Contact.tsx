@@ -1,6 +1,6 @@
-import type React from "react";
 import { useState } from "react";
 import { Send, MapPin, Phone, Mail, Globe } from "lucide-react";
+import { client } from "@/lib/client";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -11,15 +11,24 @@ export default function Contact() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 5000);
+    setSending(true);
+    try {
+      await client.submitContact(formData);
+      setSubmitted(true);
+      setFormData({ name: "", email: "", phone: "", organisation: "", message: "" });
+    } catch {
+      alert("Failed to send message. Please try again.");
+    } finally {
+      setSending(false);
+    }
   };
 
   const contactInfo = [

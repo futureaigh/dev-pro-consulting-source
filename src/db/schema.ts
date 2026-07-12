@@ -1,0 +1,18 @@
+import { sqliteTable, text } from "drizzle-orm/sqlite-core";
+
+export const users = sqliteTable("users", {
+  id: text("id").primaryKey(),
+  name: text("name"),
+  image: text("image"),
+  handle: text("handle"),
+});
+
+export const contacts = sqliteTable("contacts", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  organisation: text("organisation"),
+  message: text("message").notNull(),
+  createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
+});

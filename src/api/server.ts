@@ -1,32 +1,29 @@
-import { Hono } from "hono";
-import { deserialize, serialize } from "superjson";
-import { serve } from "@hono/node-server";
-import {
-  honoMiddleware,
-  initializeServerEnvironment,
-} from "@adaptive-ai/sdk/server";
+import express from "express";
+import { clerkMiddleware, getAuth } from "@clerk/express";
+import { procedures } from "@/api";
 import { env } from "@/lib/env";
 
-const transcoder = { serialize, deserialize };
+const app = express();
 
-initializeServerEnvironment({
-  baseUrl: env.VITE_BASE_URL,
-  realtimeDomain: env.VITE_REALTIME_DOMAIN,
-  guestServicesUrl: env.GUEST_SERVICES_URL,
-  environment: env.VITE_NODE_ENV,
-  apiKey: env.API_KEY,
-  queueDbPath: env.QUEUE_DB_FILE_NAME,
-  errorsDbPath: env.ERRORS_DB_FILE_NAME,
+app.use(express.json());
+app.use(clerkMiddleware());
+
+app.post("/api", (req, res) => {
+  const body = req.body as { method: string; params?: unknown[] };
+  const fn = procedures[body.method as keyof typeof procedures] as
+    | ((...args: unknown[]) => Promise<unknown>)
+    | undefined;
+  if (!fn) return res.status(404).json({ error: "Method not found" });
+  fn(...(body.params ?? []))
+    .then((result) => res.json(result))
+    .catch((err: Error) => res.status(500).json({ error: err.message }));
 });
 
-// Import these after initializing the environment
-const { procedures, jobs } = await import("@/api");
+if (env.VITE_NODE_ENV === "production") {
+  app.use(express.static("dist"));
+  app.get("*", (_req, res) => res.sendFile("dist/index.html", { root: "." }));
+}
 
-const app = new Hono();
-
-app.use(honoMiddleware({ procedures, jobs, transcoder }));
-
-serve({
-  fetch: app.fetch,
-  port: Number(env.PORT) + 1,
+app.listen(Number(env.PORT), () => {
+  console.log(`API server running on port ${env.PORT}`);
 });

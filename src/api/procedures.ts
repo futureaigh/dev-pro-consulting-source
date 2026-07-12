@@ -1,13 +1,21 @@
-import { db } from "@/api/db";
-import { env } from "@/lib/env";
+import { db } from "@/db";
+import { contacts } from "@/db/schema";
 
 export async function health() {
   return {
     status: "ok",
     timestamp: new Date().toISOString(),
-    db: await db.$queryRaw`SELECT 1 as result`
-      .then(() => "connected")
-      .catch(() => "disconnected"),
-    env: env.VITE_NODE_ENV,
   };
+}
+
+export async function submitContact(data: {
+  name: string;
+  email: string;
+  phone?: string;
+  organisation?: string;
+  message: string;
+}) {
+  const id = crypto.randomUUID();
+  await db.insert(contacts).values({ id, ...data });
+  return { id };
 }

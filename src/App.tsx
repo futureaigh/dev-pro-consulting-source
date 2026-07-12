@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useUser } from "@clerk/react";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
@@ -6,6 +7,14 @@ import Services from "@/pages/Services";
 import Clients from "@/pages/Clients";
 import Publications from "@/pages/Publications";
 import Contact from "@/pages/Contact";
+
+function AdminProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { isLoaded, user } = useUser();
+  if (!isLoaded) return null;
+  const isAdmin = user?.publicMetadata?.role === "admin";
+  if (!isAdmin) return <div className="p-8 text-center text-muted-foreground">Access denied.</div>;
+  return <>{children}</>;
+}
 
 function App() {
   return (
