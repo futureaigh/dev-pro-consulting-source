@@ -51,3 +51,4 @@ errors.db-shm
 
 # Agents
 .agents
+.commandcode

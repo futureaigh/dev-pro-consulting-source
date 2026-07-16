@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { useUser } from "@clerk/react";
+import { useEffect } from "react";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
@@ -12,9 +13,14 @@ import AdminDashboard from "@/pages/admin/Dashboard";
 
 function AdminProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isLoaded, user } = useUser();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isLoaded && !user) navigate("/sign-in", { replace: true });
+  }, [isLoaded, user, navigate]);
   if (!isLoaded) return null;
-  const isAdmin = user?.publicMetadata?.role === "admin";
-  if (!isAdmin) return <div className="p-8 text-center text-muted-foreground">Access denied.</div>;
+  if (!user) return null;
+  if (user?.publicMetadata?.role !== "admin")
+    return <div className="p-8 text-center text-muted-foreground">Access denied.</div>;
   return <>{children}</>;
 }
 
